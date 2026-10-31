@@ -1,0 +1,42 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "org.warminbox/mcp",
+  "title": "Warm Inbox",
+  "description": "Email warm-up for AI builders: check deliverability, connect mailboxes, pause or tune warm-ups.",
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.warminbox.org/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer wi_live_... (create your key at https://warminbox.org/public-api/keys.php)",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "websiteUrl": "https://warminbox.org",
+  "repository": {
+    "url": "https://github.com/TheSnowGuru/warminbox-mcp",
+    "source": "github"
+  },
+  "icons": [
+    {
+      "src": "https://warminbox.org/img/favicons/favicon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
+    },
+    {
+      "src": "https://warminbox.org/img/favicons/favicon-96x96.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "96x96"
+      ]
+    }
+  ]
+}

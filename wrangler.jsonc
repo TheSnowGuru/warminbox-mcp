@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "warminbox-mcp",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true
+  // After configuring the hostname, disable workers_dev if desired and uncomment:
+  // ,"routes": [{ "pattern": "mcp.warminbox.org/*", "zone_name": "warminbox.org" }]
+  // Or use a Workers custom domain: { "pattern": "mcp.warminbox.org", "custom_domain": true }
+}

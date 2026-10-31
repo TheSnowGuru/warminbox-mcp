@@ -1,0 +1,255 @@
+{
+    "serverInfo": {
+        "name": "Warm Inbox",
+        "title": "Warm Inbox",
+        "version": "0.1.0"
+    },
+    "authentication": {
+        "required": true,
+        "schemes": [
+            "bearer"
+        ]
+    },
+    "tools": [
+        {
+            "name": "get_account",
+            "title": "Get account",
+            "description": "Confirm the connected Warm Inbox account and subscription before managing warm-ups.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Get account",
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "list_warmups",
+            "title": "List warm-ups",
+            "description": "List all warm-ups for the connected account, including API and dashboard campaigns. Dashboard campaigns (source=dashboard, read_only=true) are read-only; writes return 404 or 403.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "List warm-ups",
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "get_warmup",
+            "title": "Get warm-up",
+            "description": "Read one warm-up and its current configuration. Dashboard campaigns (source=dashboard, read_only=true) are read-only; writes return 404 or 403.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Warm-up id returned by list_warmups."
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Get warm-up",
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "get_warmup_health",
+            "title": "Get warm-up health",
+            "description": "Read live deliverability metrics, including sent volume and 14-day spam rate, for an API or dashboard warm-up.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Warm-up id returned by list_warmups."
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Get warm-up health",
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "create_connect_link",
+            "title": "Create mailbox connect link",
+            "description": "Create a one-time hosted connection URL, valid for 30 minutes. Show the returned URL to the user and ask them to open it to enter mailbox credentials themselves. Never request, accept, or handle SMTP/IMAP or Gmail app passwords in AI chat. After the human finishes, use list_warmups and get_warmup_health.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "smtp",
+                            "gmail"
+                        ]
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "emails_per_day": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 200
+                    },
+                    "response_rate": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    }
+                },
+                "required": [
+                    "type",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "emails_per_day",
+                    "response_rate"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Create mailbox connect link",
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "pause_warmup",
+            "title": "Pause warm-up",
+            "description": "Pause sending for an API-created warm-up. Dashboard campaigns (source=dashboard, read_only=true) are read-only; writes return 404 or 403.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Warm-up id returned by list_warmups."
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Pause warm-up",
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "resume_warmup",
+            "title": "Resume warm-up",
+            "description": "Resume sending for an API-created warm-up. Dashboard campaigns (source=dashboard, read_only=true) are read-only; writes return 404 or 403.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Warm-up id returned by list_warmups."
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Resume warm-up",
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        },
+        {
+            "name": "set_emails_per_day",
+            "title": "Set emails per day",
+            "description": "Set an API-created warm-up daily sending volume (integer 0\u2013200). Dashboard campaigns (source=dashboard, read_only=true) are read-only; writes return 404 or 403.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Warm-up id returned by list_warmups."
+                    },
+                    "emails_per_day": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 200
+                    }
+                },
+                "required": [
+                    "id",
+                    "emails_per_day"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+            },
+            "annotations": {
+                "title": "Set emails per day",
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": true
+            }
+        }
+    ],
+    "resources": [],
+    "prompts": [
+        {
+            "name": "setup_warmup",
+            "title": "Set up a warm-up",
+            "description": "Guide safe Warm Inbox setup without putting mailbox passwords in AI chat."
+        }
+    ]
+}

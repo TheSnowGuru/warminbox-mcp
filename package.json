@@ -1,0 +1,40 @@
+{
+  "name": "warminbox-mcp",
+  "version": "0.1.0",
+  "description": "Hosted MCP server for Warm Inbox email warm-up (Streamable HTTP, bearer pass-through)",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "start": "node dist/node.js",
+    "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "express": "^5.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261031.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.12",
+    "wrangler": "^4.156.0"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheSnowGuru/warminbox-mcp"
+  },
+  "homepage": "https://warminbox.org"
+}

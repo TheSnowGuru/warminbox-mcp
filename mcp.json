@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "warminbox": {
+      "url": "https://mcp.warminbox.org/mcp",
+      "headers": { "Authorization": "Bearer ${WARMINBOX_API_KEY}" }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "warminbox",
+  "version": "0.1.0",
+  "description": "Warm Inbox email warm-up: check deliverability and spam rates, connect mailboxes via a secure hosted link, and pause, resume or tune warm-ups.",
+  "author": { "name": "Warm Inbox" },
+  "homepage": "https://warminbox.org",
+  "repository": "https://github.com/TheSnowGuru/warminbox-mcp",
+  "license": "MIT",
+  "keywords": ["email", "warmup", "deliverability", "cold-email", "mcp"],
+  "logo": "assets/logo.svg",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "WARMINBOX_API_KEY": { "type": "string", "title": "Warm Inbox API key", "description": "Your own wi_live_... key from https://warminbox.org/public-api/keys.php" }
+    },
+    "required": ["WARMINBOX_API_KEY"]
+  }
+}
