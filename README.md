@@ -1,5 +1,7 @@
 # Warm Inbox MCP server
 
+[![skills.sh](https://skills.sh/b/TheSnowGuru/warminbox-mcp)](https://skills.sh/TheSnowGuru/warminbox-mcp)
+
 <img src="assets/logo.png" width="64" alt="Warm Inbox logo">
 
 Hosted [Model Context Protocol](https://modelcontextprotocol.io) server for [Warm Inbox](https://warminbox.org), an email warm-up and deliverability service. It lets AI assistants and app builders (Cursor, Claude Code, Lovable, Bolt, Replit, v0, Windsurf, Base44 and others) check warm-up health and spam rates, connect a mailbox through a secure hosted link, and pause, resume or tune daily sending volume.
@@ -40,14 +42,6 @@ Every tool has a human-readable `title` and full annotations (`readOnlyHint`, `d
 Use endpoint `https://mcp.warminbox.org/mcp` and header `Authorization: Bearer <your-own-wi_live_key>`. Obtain a key at [Warm Inbox API keys](https://warminbox.org/public-api/keys.php). Examples below contain placeholders only. Configure credentials privately in each app, never commit populated configuration or embed real keys in install links.
 
 Documentation reviewed 2026-10-31. UI labels and plan availability can vary; items marked **verify in-app** could not be confirmed from accessible current official documentation.
-
-### Lovable
-
-Add a custom MCP chat connector, name Warm Inbox, enter the endpoint, and choose bearer-token/API-key authentication. Set the token to your `wi_live_...` key; if the UI offers raw headers, use `Authorization: Bearer ...`. Ask “Use Warm Inbox to list my warm-ups.” Custom MCP is builder context; it does not automatically install a runtime backend integration into the generated app. [Official setup and authentication choices](https://docs.lovable.dev/integrations/custom-mcp).
-
-### Bolt.new
-
-Open Connectors, add a custom Connector, set URL to the endpoint and transport to HTTP. Select API-key authentication and supply your key so the outgoing header is `Authorization: Bearer ...` (exact field/prefix behavior: **verify in-app**). [Bolt's official announcement](https://bolt.new/blog/introducing-connectors) confirms remote custom connectors and API-key/OAuth credentials. If this UI cannot emit a bearer header, this server cannot connect through that UI until OAuth is added.
 
 ### Replit Agent
 
@@ -116,6 +110,57 @@ Use `/mcp` to inspect the connection. [Official HTTP transport/header documentat
 
 Settings → Connectors → Add custom connector → endpoint URL. [Official remote connector guide](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp). **Limitation:** some connector UIs support OAuth or no-auth only and do not expose arbitrary bearer headers. This server rejects no-auth and does not implement OAuth, so those UIs cannot connect directly. Availability of a bearer-header field is **verify in-app**; use Claude Code in the meantime. Do not put the key in the URL.
 
+## Agent skill
+
+Install the `warm-inbox` agent skill with the [skills CLI](https://github.com/vercel-labs/skills):
+
+```bash
+npx skills add TheSnowGuru/warminbox-mcp
+```
+
+This installs instructions for safe mailbox connection, deliverability checks, spam-rate triage, and warm-up volume management from [`skills/warm-inbox/SKILL.md`](skills/warm-inbox/SKILL.md). Configure the MCP connection and your API key privately in your client; the skill does not include credentials.
+
+## Use with Lovable / Bolt / Base44
+
+Documentation reviewed 2026-11-01 for these three clients. Obtain your own key at [Warm Inbox API keys](https://warminbox.org/public-api/keys.php). Enter it only in the private connection settings, never in chat, URLs, or committed files.
+
+### Lovable
+
+[Official custom MCP guide](https://docs.lovable.dev/integrations/custom-mcp).
+
+1. Open **Connectors** → **Add custom** (top right of the catalog) → **MCP server**.
+2. Set **Server name** to `Warm Inbox`. For **Connection**, keep **Direct connection** (this choice is only shown if your workspace has multiple routes).
+3. Set **Server URL** to `https://mcp.warminbox.org/mcp`.
+4. For **Authentication**, choose **Bearer token or API key** instead of the default OAuth, and paste your `wi_live_...` key.
+5. Click **Add server**.
+6. Test with: “Using the Warm Inbox connector, list my warm-ups and show their spam rate.”
+
+Available on all plans. Chat connectors are personal to you and are never part of your published app; they provide builder context only. If **MCP server** is greyed out, a workspace admin disabled custom MCP servers.
+
+### Bolt
+
+[Official MCP guide](https://support.bolt.new/integrations/mcp).
+
+1. From the Bolt homepage chatbox, click the **plus icon** → **Connectors** → **Manage connectors** → **Custom MCP server**.
+2. Set **Name** to `Warm Inbox`, **URL** to `https://mcp.warminbox.org/mcp`, and **Transport type** to **HTTP**.
+3. Set **Authentication** to **API key** and paste your `wi_live_...` key.
+4. Click **Connect** and check for the **Connected** status.
+5. Optionally select **Auto-enable for all projects**. Otherwise, enable it per project through the chatbox **plus icon** → **Connectors** → toggle the connector.
+
+Review the tools through **three dots** → **Edit** → **Tools list**; turn off write tools if you only want read access. The server accepts either `Bearer wi_live_...` or the bare `wi_live_...` key in the Authorization header.
+
+### Base44
+
+[Official custom MCP guide](https://docs.base44.com/documentation/account-and-billing/setting-up-a-custom-mcp). Requires a **Builder plan or higher**.
+
+1. Click your **workspace name** (bottom left) → **Account preferences** → **Builder** → scroll to **MCP Connections** → **Add custom MCP**.
+2. Set **Name** to `Warm Inbox` and **URL** to `https://mcp.warminbox.org/mcp`.
+3. For **Authentication**, choose **Not required**: the key goes in a custom header instead of OAuth.
+4. Under **Custom headers**, click **Add header**. Set **Header name** to `Authorization` and **Header value** to `Bearer wi_live_...`. Type the value exactly with the word `Bearer`, a space, then your own key.
+5. Click **Test**, then **Test & add**.
+
+Connections are per account and available in all apps and workspaces. MCP provides builder-chat context only and cannot be called from your published app at runtime. Base44 also sends an `X-Base44-App-Id` header, which Warm Inbox ignores.
+
 ## Develop / self-host
 Node 20+.
 ```bash
@@ -129,7 +174,7 @@ npx wrangler deploy    # or deploy src/worker.ts to Cloudflare Workers (wrangler
 `src/core/` holds the shared API client, tools and server card; `src/node.ts` (Express) and `src/worker.ts` (Workers) are thin entrypoints. `ecosystem.config.cjs` is a PM2 example for running the Node entry behind a reverse proxy.
 
 ## Listing files
-`server.json` (MCP Registry), `.well-known/mcp/server-card.json` (snapshot of the live card), `glama.json` (Glama ownership), `.mcp.json` / `mcp.json` / `.cursor-plugin/plugin.json` (Cursor plugin and cursor.directory).
+[`skills/warm-inbox/SKILL.md`](skills/warm-inbox/SKILL.md) (installable agent skill), `server.json` (MCP Registry), `.well-known/mcp/server-card.json` (snapshot of the live card), `glama.json` (Glama ownership), `.mcp.json` / `mcp.json` / `.cursor-plugin/plugin.json` (Cursor plugin and cursor.directory).
 
 ## License
 MIT. See [LICENSE](LICENSE).
